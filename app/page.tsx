@@ -1,65 +1,181 @@
-import Image from "next/image";
+'use client';
+
+import CurrentPhrase from '@/components/current-phrase';
+import LanguageSelector from '@/components/language-selector';
+import LyricsList from '@/components/lyrics-list';
+import SongMeaning from '@/components/song-meaning';
+import SpeedSelector from '@/components/speed-selector';
+import { Button } from '@/components/ui/button';
+import YoutubePlayerComponent, { YoutubePlayerRef } from '@/components/youtube-player';
+import phrasesData from '@/data/phrases.json';
+import { Gauge, Languages, Sparkles } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+interface Phrase {
+  start_time: number;
+  end_time: number;
+  tamil: string;
+  romanization: string;
+  english_translation: string;
+}
 
 export default function Home() {
+  const [elapsed, setElapsed] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [showSongMeaning, setShowSongMeaning] = useState(false);
+  const [videoSpeed, setVideoSpeed] = useState(1.0);
+  const [showSpeedModal, setShowSpeedModal] = useState(false);
+  const [lyricsLang, setLyricsLang] = useState<'EN' | 'TA' | 'PN'>('EN');
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const playerRef = useRef<YoutubePlayerRef>(null);
+  const phrases = phrasesData.phrases as Phrase[];
+
+  const currentPhrase = useMemo(() => {
+    return phrases.find((phrase) => elapsed >= phrase.start_time && elapsed <= phrase.end_time) || null;
+  }, [elapsed, phrases]);
+
+  const onPhraseClick = (phrase: Phrase) => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(phrase.start_time);
+      setPlaying(true);
+    }
+  };
+
+  const onChangeState = (state: string) => {
+    if (state === 'ended') {
+      setPlaying(false);
+    } else if (state === 'paused') {
+      setPlaying(false);
+    } else if (state === 'playing') {
+      setPlaying(true);
+    }
+  };
+
+  const getLanguageDisplayText = useCallback((lang: string) => {
+    switch (lang) {
+      case 'EN':
+        return 'English';
+      case 'TA':
+        return 'Tamil';
+      case 'PN':
+        return 'Pronounce';
+      default:
+        return 'English';
+    }
+  }, []);
+
+  const onModalOpen = useCallback(() => {
+    setPlaying(false);
+    setShowSongMeaning(true);
+  }, []);
+
+  const onModalClose = useCallback(() => {
+    setShowSongMeaning(false);
+  }, []);
+
+  const onSpeedModalOpen = useCallback(() => {
+    setShowSpeedModal(true);
+    setPlaying(false);
+  }, []);
+
+  const onSpeedModalClose = useCallback(() => {
+    setShowSpeedModal(false);
+  }, []);
+
+  const onSpeedSelect = useCallback((speed: number) => {
+    setVideoSpeed(speed);
+    setShowSpeedModal(false);
+  }, []);
+
+  const onLanguageModalOpen = useCallback(() => {
+    setShowLanguageModal(true);
+    setPlaying(false);
+  }, []);
+
+  const onLanguageModalClose = useCallback(() => {
+    setShowLanguageModal(false);
+  }, []);
+
+  const onLanguageSelect = useCallback((lang: 'EN' | 'TA' | 'PN') => {
+    setLyricsLang(lang);
+    setShowLanguageModal(false);
+  }, []);
+
+  // Resume playback when modal closes
+  useEffect(() => {
+    if (!showSongMeaning && !showSpeedModal && !showLanguageModal) {
+      const timer = setTimeout(() => {
+        setPlaying(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showSongMeaning, showSpeedModal, showLanguageModal]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex flex-col h-screen bg-black text-white overflow-hidden">
+      {/* Header Controls */}
+      <div className="flex flex-row justify-between items-center mx-2.5 gap-2 flex-wrap sm:flex-nowrap flex-shrink-0 py-2">
+        <Button
+          onClick={onLanguageModalOpen}
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+        >
+          <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-sm sm:text-base">
+            {getLanguageDisplayText(lyricsLang)}
+          </span>
+        </Button>
+        <Button
+          onClick={onSpeedModalOpen}
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+        >
+          <Gauge className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-sm sm:text-base">{videoSpeed.toFixed(2)}x</span>
+        </Button>
+        <Button
+          onClick={onModalOpen}
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+        >
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base">Song Meaning</span>
+        </Button>
+      </div>
+
+      {/* Modals */}
+      <SongMeaning open={showSongMeaning} onOpenChange={onModalClose} />
+      <SpeedSelector
+        open={showSpeedModal}
+        onOpenChange={onSpeedModalClose}
+        selectedSpeed={videoSpeed}
+        onSelect={onSpeedSelect}
+      />
+      <LanguageSelector
+        open={showLanguageModal}
+        onOpenChange={onLanguageModalClose}
+        selectedLang={lyricsLang}
+        onSelect={onLanguageSelect}
+      />
+
+      <div className="w-full px-2.5 pt-4 pb-2 shrink-0">
+        <YoutubePlayerComponent 
+          ref={playerRef}
+          videoId="2hBZTzopw7w" 
+          playing={playing}
+          playbackRate={videoSpeed}
+          onStateChange={onChangeState}
+          onTimeUpdate={setElapsed}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+      <div className="px-2.5 shrink-0">
+        <CurrentPhrase phrase={currentPhrase} />
+      </div>
+      <div className="flex-1 min-h-0 px-2.5 flex flex-col">
+        <LyricsList
+          phrases={phrases}
+          currentPhrase={currentPhrase}
+          lyricsLang={lyricsLang}
+          onPhraseClick={onPhraseClick}
+        />
+      </div>
     </div>
   );
 }
