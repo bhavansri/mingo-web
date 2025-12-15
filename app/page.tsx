@@ -10,9 +10,9 @@ export default function LandingPage() {
       <section className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-6xl mx-auto text-center space-y-8 sm:space-y-12">
             <div className="flex flex-col items-center gap-3 sm:gap-4">
-              <div className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-linear-to-r from-[#f12711] to-[#f5af19] bg-clip-text text-transparent">mingo.ai</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-linear-to-r from-[#f12711] to-[#f5af19] bg-clip-text text-transparent">mingo.ai</div>
             </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             Learn Tamil Through Music 🎶
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
@@ -48,7 +48,7 @@ export default function LandingPage() {
           <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20">
             <div className="flex-1 order-2 lg:order-1">
               <div className="space-y-6">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                   Synchronized Lyrics ✨
                 </h2>
                 <p className="text-base sm:text-lg text-black/70 leading-relaxed">
@@ -78,7 +78,7 @@ export default function LandingPage() {
           <div className="flex flex-col lg:flex-row-reverse items-center gap-12 sm:gap-16 lg:gap-20">
             <div className="flex-1 order-2 lg:order-2">
               <div className="space-y-6">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                     Playback Speed Control ⏱️
                   </h2>
                 <p className="text-base sm:text-lg text-black/70 leading-relaxed">
@@ -103,7 +103,7 @@ export default function LandingPage() {
           <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20">
             <div className="flex-1 order-2 lg:order-1">
               <div className="space-y-6">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                   AI-powered Summaries 🪄
                 </h2>
                 <p className="text-base sm:text-lg text-black/70 leading-relaxed">
@@ -133,7 +133,7 @@ export default function LandingPage() {
       {/* Final CTA Section */}
       <section className="px-4 sm:px-6 py-16 sm:py-20 md:py-32 bg-white">
         <div className="max-w-4xl mx-auto text-center space-y-8 sm:space-y-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
             Ready to Start Learning?
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
