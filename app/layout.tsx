@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mingo Music",
+  title: "🥭 Mingo",
   description: "Tamil music with synchronized lyrics",
 };
 

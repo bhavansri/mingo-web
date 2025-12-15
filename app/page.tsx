@@ -1,181 +1,157 @@
-'use client';
-
-import CurrentPhrase from '@/components/current-phrase';
-import LanguageSelector from '@/components/language-selector';
-import LyricsList from '@/components/lyrics-list';
-import SongMeaning from '@/components/song-meaning';
-import SpeedSelector from '@/components/speed-selector';
 import { Button } from '@/components/ui/button';
-import YoutubePlayerComponent, { YoutubePlayerRef } from '@/components/youtube-player';
-import phrasesData from '@/data/phrases.json';
-import { Gauge, Languages, Sparkles } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import FeatureScreenshot from '@/components/feature-screenshot';
+import DeviceFrame from '@/components/device-frame';
+import Link from 'next/link';
 
-interface Phrase {
-  start_time: number;
-  end_time: number;
-  tamil: string;
-  romanization: string;
-  english_translation: string;
-}
-
-export default function Home() {
-  const [elapsed, setElapsed] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [showSongMeaning, setShowSongMeaning] = useState(false);
-  const [videoSpeed, setVideoSpeed] = useState(1.0);
-  const [showSpeedModal, setShowSpeedModal] = useState(false);
-  const [lyricsLang, setLyricsLang] = useState<'EN' | 'TA' | 'PN'>('EN');
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-  const playerRef = useRef<YoutubePlayerRef>(null);
-  const phrases = phrasesData.phrases as Phrase[];
-
-  const currentPhrase = useMemo(() => {
-    return phrases.find((phrase) => elapsed >= phrase.start_time && elapsed <= phrase.end_time) || null;
-  }, [elapsed, phrases]);
-
-  const onPhraseClick = (phrase: Phrase) => {
-    if (playerRef.current) {
-      playerRef.current.seekTo(phrase.start_time);
-      setPlaying(true);
-    }
-  };
-
-  const onChangeState = (state: string) => {
-    if (state === 'ended') {
-      setPlaying(false);
-    } else if (state === 'paused') {
-      setPlaying(false);
-    } else if (state === 'playing') {
-      setPlaying(true);
-    }
-  };
-
-  const getLanguageDisplayText = useCallback((lang: string) => {
-    switch (lang) {
-      case 'EN':
-        return 'English';
-      case 'TA':
-        return 'Tamil';
-      case 'PN':
-        return 'Pronounce';
-      default:
-        return 'English';
-    }
-  }, []);
-
-  const onModalOpen = useCallback(() => {
-    setPlaying(false);
-    setShowSongMeaning(true);
-  }, []);
-
-  const onModalClose = useCallback(() => {
-    setShowSongMeaning(false);
-  }, []);
-
-  const onSpeedModalOpen = useCallback(() => {
-    setShowSpeedModal(true);
-    setPlaying(false);
-  }, []);
-
-  const onSpeedModalClose = useCallback(() => {
-    setShowSpeedModal(false);
-  }, []);
-
-  const onSpeedSelect = useCallback((speed: number) => {
-    setVideoSpeed(speed);
-    setShowSpeedModal(false);
-  }, []);
-
-  const onLanguageModalOpen = useCallback(() => {
-    setShowLanguageModal(true);
-    setPlaying(false);
-  }, []);
-
-  const onLanguageModalClose = useCallback(() => {
-    setShowLanguageModal(false);
-  }, []);
-
-  const onLanguageSelect = useCallback((lang: 'EN' | 'TA' | 'PN') => {
-    setLyricsLang(lang);
-    setShowLanguageModal(false);
-  }, []);
-
-  // Resume playback when modal closes
-  useEffect(() => {
-    if (!showSongMeaning && !showSpeedModal && !showLanguageModal) {
-      const timer = setTimeout(() => {
-        setPlaying(true);
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [showSongMeaning, showSpeedModal, showLanguageModal]);
-
+export default function LandingPage() {
   return (
-    <div className="flex flex-col h-screen bg-black text-white overflow-hidden">
-      {/* Header Controls */}
-      <div className="flex flex-row justify-between items-center mx-2.5 gap-2 flex-wrap sm:flex-nowrap flex-shrink-0 py-2">
-        <Button
-          onClick={onLanguageModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
-        >
-          <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="text-sm sm:text-base">
-            {getLanguageDisplayText(lyricsLang)}
-          </span>
-        </Button>
-        <Button
-          onClick={onSpeedModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
-        >
-          <Gauge className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="text-sm sm:text-base">{videoSpeed.toFixed(2)}x</span>
-        </Button>
-        <Button
-          onClick={onModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
-        >
-          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-sm sm:text-base">Song Meaning</span>
-        </Button>
-      </div>
+    <div className="min-h-screen bg-white text-black">
+      {/* Hero Section */}
+      <section className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+        <div className="max-w-6xl mx-auto text-center space-y-8 sm:space-y-12">
+            <div className="flex flex-col items-center gap-3 sm:gap-4">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight bg-linear-to-r from-[#f12711] to-[#f5af19] bg-clip-text text-transparent">mingo.ai</div>
+            </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            Learn Tamil Through Music 🎶
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
+            A simple and engaging way to learn Tamil through your favorite songs
+          </p>
+          {/* Main Hero Image */}
+          <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto mt-8 sm:mt-12">
+            <DeviceFrame className="w-full">
+              <FeatureScreenshot
+                src="/screenshots/hero.png"
+                alt="Mingo - Learn Tamil Through Music app interface"
+                priority
+              />
+            </DeviceFrame>
+          </div>
+          <div className="pt-4 sm:pt-6">
+            <Link href="/learn">
+              <Button 
+                size="lg" 
+                className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
+              >
+                Start Learning for Free
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      {/* Modals */}
-      <SongMeaning open={showSongMeaning} onOpenChange={onModalClose} />
-      <SpeedSelector
-        open={showSpeedModal}
-        onOpenChange={onSpeedModalClose}
-        selectedSpeed={videoSpeed}
-        onSelect={onSpeedSelect}
-      />
-      <LanguageSelector
-        open={showLanguageModal}
-        onOpenChange={onLanguageModalClose}
-        selectedLang={lyricsLang}
-        onSelect={onLanguageSelect}
-      />
+      {/* Features Section */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20 md:py-32 bg-white">
+        <div className="max-w-7xl mx-auto space-y-24 sm:space-y-32 md:space-y-40">
+          {/* Feature 1: Synchronized Lyrics */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20">
+            <div className="flex-1 order-2 lg:order-1">
+              <div className="space-y-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  Synchronized Lyrics ✨
+                </h2>
+                <p className="text-base sm:text-lg text-black/70 leading-relaxed">
+                  Watch lyrics highlight in real-time as the music plays. Each phrase is perfectly 
+                  synchronized with the song, making it easy to follow along and understand the rhythm 
+                  and flow of Tamil language.
+                </p>
+                <p className="text-base sm:text-lg text-black/70 leading-relaxed">
+                  Toggle seamlessly between English translations, Tamil script, and Pronunciation to 
+                  understand meaning, recognize Tamil characters, and learn proper pronunciation all at once.
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 order-1 lg:order-2 w-full">
+              <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto">
+                <DeviceFrame className="w-full">
+                  <FeatureScreenshot
+                    src="/screenshots/feature-1.png"
+                    alt="Synchronized lyrics feature showing real-time phrase highlighting"
+                  />
+                </DeviceFrame>
+              </div>
+            </div>
+          </div>
 
-      <div className="w-full px-2.5 pt-4 pb-2 shrink-0">
-        <YoutubePlayerComponent 
-          ref={playerRef}
-          videoId="2hBZTzopw7w" 
-          playing={playing}
-          playbackRate={videoSpeed}
-          onStateChange={onChangeState}
-          onTimeUpdate={setElapsed}
-        />
-      </div>
-      <div className="px-2.5 shrink-0">
-        <CurrentPhrase phrase={currentPhrase} />
-      </div>
-      <div className="flex-1 min-h-0 px-2.5 flex flex-col">
-        <LyricsList
-          phrases={phrases}
-          currentPhrase={currentPhrase}
-          lyricsLang={lyricsLang}
-          onPhraseClick={onPhraseClick}
-        />
-      </div>
+          {/* Feature 2: Speed Control */}
+          <div className="flex flex-col lg:flex-row-reverse items-center gap-12 sm:gap-16 lg:gap-20">
+            <div className="flex-1 order-2 lg:order-2">
+              <div className="space-y-6">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                    Playback Speed Control ⏱️
+                  </h2>
+                <p className="text-base sm:text-lg text-black/70 leading-relaxed">
+                  Adjust playback speed to match your learning level. Slow down to catch every word 
+                  and syllable, or speed up as you become more comfortable with the language.
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 order-1 lg:order-1 w-full">
+              <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto">
+                <DeviceFrame className="w-full">
+                  <FeatureScreenshot
+                    src="/screenshots/feature-2.png"
+                    alt="Speed Control feature showing adjustable playback speed options"
+                  />
+                </DeviceFrame>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 3: AI Summaries */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-20">
+            <div className="flex-1 order-2 lg:order-1">
+              <div className="space-y-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                  AI-powered Summaries 🪄
+                </h2>
+                <p className="text-base sm:text-lg text-black/70 leading-relaxed">
+                  Get AI-powered summaries that describe the theme, chorus breakdown, and important 
+                  metaphors and concepts of each song to assist with your language learning journey.
+                </p>
+                <p className="text-base sm:text-lg text-black/70 leading-relaxed">
+                  Understand the deeper meaning behind the lyrics, cultural context, and poetic devices 
+                  used in Tamil music, making your learning experience more meaningful and engaging.
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 order-1 lg:order-2 w-full">
+              <div className="relative w-full max-w-[200px] sm:max-w-[250px] md:max-w-[300px] mx-auto">
+                <DeviceFrame className="w-full">
+                  <FeatureScreenshot
+                    src="/screenshots/feature-3.png"
+                    alt="AI Summaries feature showing theme, chorus breakdown, and metaphors"
+                  />
+                </DeviceFrame>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="px-4 sm:px-6 py-16 sm:py-20 md:py-32 bg-white">
+        <div className="max-w-4xl mx-auto text-center space-y-8 sm:space-y-12">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
+            Ready to Start Learning?
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
+            Join thousands of learners mastering Tamil through the power of music. 
+            Start your journey today.
+          </p>
+          <div className="pt-4 sm:pt-6">
+            <Link href="/learn">
+              <Button 
+                size="lg" 
+                className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
+              >
+                Start Learning for Free
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
