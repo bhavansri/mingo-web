@@ -20,6 +20,7 @@ const YoutubePlayerComponent = forwardRef<YoutubePlayerRef, YoutubePlayerProps>(
     const playerRef = useRef<any>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const [isReady, setIsReady] = useState(false);
+    const [playerHeight, setPlayerHeight] = useState(200);
 
     useImperativeHandle(ref, () => ({
       seekTo: (time: number) => {
@@ -29,8 +30,24 @@ const YoutubePlayerComponent = forwardRef<YoutubePlayerRef, YoutubePlayerProps>(
       },
     }));
 
+    // Update player height based on screen size
+    useEffect(() => {
+      const updateHeight = () => {
+        // Mobile: 200px, Tablet and up: 400px
+        const height = window.innerWidth >= 768 ? 400 : 200;
+        setPlayerHeight(height);
+      };
+
+      // Set initial height
+      updateHeight();
+
+      // Update on resize
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
+    }, []);
+
     const opts: YouTubeProps['opts'] = {
-      height: '200',
+      height: playerHeight.toString(),
       width: '100%',
       playerVars: {
         autoplay: 0,
