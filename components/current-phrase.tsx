@@ -1,7 +1,5 @@
 'use client';
 
-import wordTranslationsData from '@/data/word_translations.json';
-
 interface Phrase {
   start_time: number;
   end_time: number;
@@ -12,16 +10,16 @@ interface Phrase {
 
 interface CurrentPhraseProps {
   phrase: Phrase | null;
+  wordTranslations: Record<string, string>;
 }
 
-export default function CurrentPhrase({ phrase }: CurrentPhraseProps) {
+export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhraseProps) {
   if (!phrase) {
     return <div className="h-[75px] flex items-center justify-center" />;
   }
 
   const tamilWords = phrase.tamil.split(' ');
   const romanWords = phrase.romanization.split(' ');
-  const wordTranslations = wordTranslationsData.word_translations as Record<string, string>;
 
   return (
     <div className="flex flex-col items-center justify-center mb-2">

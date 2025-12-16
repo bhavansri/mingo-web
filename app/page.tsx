@@ -29,7 +29,7 @@ export default function LandingPage() {
             </DeviceFrame>
           </div>
           <div className="pt-4 sm:pt-6">
-            <Link href="/learn">
+            <Link href="/learn?id=1">
               <Button 
                 size="lg" 
                 className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
@@ -141,7 +141,7 @@ export default function LandingPage() {
             Start your journey today.
           </p>
           <div className="pt-4 sm:pt-6">
-            <Link href="/learn">
+            <Link href="/learn?id=1">
               <Button 
                 size="lg" 
                 className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
