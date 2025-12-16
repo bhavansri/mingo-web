@@ -60,6 +60,17 @@ const YoutubePlayerComponent = forwardRef<YoutubePlayerRef, YoutubePlayerProps>(
     const handleReady: YouTubeProps['onReady'] = (event: YouTubeEvent<any>) => {
       playerRef.current = event.target;
       setIsReady(true);
+      
+      // Set playback rate when player is ready (only on initial load)
+      // This works reliably when set before the video starts playing
+      if (event.target) {
+        try {
+          event.target.setPlaybackRate(playbackRate);
+        } catch (error) {
+          console.error('Error setting initial playback rate:', error);
+        }
+      }
+      
       // Get initial time when player is ready
       if (event.target && onTimeUpdate) {
         try {
@@ -130,16 +141,6 @@ const YoutubePlayerComponent = forwardRef<YoutubePlayerRef, YoutubePlayerProps>(
         playerRef.current.pauseVideo();
       }
     }, [playing]);
-
-    useEffect(() => {
-      if (!playerRef.current) return;
-
-      try {
-        playerRef.current.setPlaybackRate(playbackRate);
-      } catch (error) {
-        console.error('Error setting playback rate:', error);
-      }
-    }, [playbackRate]);
 
     useEffect(() => {
       // Track time continuously once player is ready, not just when playing

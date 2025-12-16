@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import YoutubePlayerComponent, { YoutubePlayerRef } from '@/components/youtube-player';
 import { supabase } from '@/lib/supabase';
 import { Gauge, Languages, Sparkles } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 interface Phrase {
@@ -31,6 +31,7 @@ interface Song {
 
 export default function Home() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [showSongMeaning, setShowSongMeaning] = useState(false);
@@ -39,6 +40,7 @@ export default function Home() {
   const [lyricsLang, setLyricsLang] = useState<'EN' | 'TA' | 'PN'>('EN');
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const playerRef = useRef<YoutubePlayerRef>(null);
+  const previousSpeedRef = useRef<number | null>(null);
   
   // Song data state
   const [youtubeId, setYoutubeId] = useState<string>('');
@@ -100,9 +102,19 @@ export default function Home() {
   }, []);
 
   const onSpeedSelect = useCallback((speed: number) => {
-    setVideoSpeed(speed);
     setShowSpeedModal(false);
-  }, []);
+    
+    // If speed changed, update URL and reload page
+    if (speed !== videoSpeed) {
+      const songId = searchParams.get('id');
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('speed', speed.toString());
+      if (songId) {
+        currentUrl.searchParams.set('id', songId);
+      }
+      window.location.href = currentUrl.toString();
+    }
+  }, [videoSpeed, searchParams]);
 
   const onLanguageModalOpen = useCallback(() => {
     setShowLanguageModal(true);
@@ -117,6 +129,20 @@ export default function Home() {
     setLyricsLang(lang);
     setShowLanguageModal(false);
   }, []);
+
+  // Initialize video speed from URL params
+  useEffect(() => {
+    const speedParam = searchParams.get('speed');
+    if (speedParam) {
+      const speed = parseFloat(speedParam);
+      if (!isNaN(speed) && speed > 0) {
+        setVideoSpeed(speed);
+        previousSpeedRef.current = speed;
+      }
+    } else {
+      previousSpeedRef.current = 1.0;
+    }
+  }, [searchParams]);
 
   // Fetch song data from Supabase
   useEffect(() => {
