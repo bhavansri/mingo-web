@@ -26,38 +26,6 @@ export default function LyricsList({
   const listRef = useRef<HTMLDivElement>(null);
   const currentPhraseRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll disabled
-  // useEffect(() => {
-  //   if (currentPhrase && currentPhraseRef.current && listRef.current) {
-  //     // Use a small delay to ensure DOM is fully rendered
-  //     const timeoutId = setTimeout(() => {
-  //       const container = listRef.current;
-  //       const element = currentPhraseRef.current;
-  //       
-  //       if (!container || !element) return;
-  //       
-  //       // Get bounding rectangles
-  //       const containerRect = container.getBoundingClientRect();
-  //       const elementRect = element.getBoundingClientRect();
-  //       
-  //       // Calculate element's position relative to container's scrollable content
-  //       const elementTopRelativeToContainer = elementRect.top - containerRect.top + container.scrollTop;
-  //       const elementHeight = elementRect.height;
-  //       const containerHeight = containerRect.height;
-  //       
-  //       // Calculate target scroll to center the element
-  //       const targetScrollTop = elementTopRelativeToContainer - (containerHeight / 2) + (elementHeight / 2);
-  //       
-  //       container.scrollTo({
-  //         top: Math.max(0, targetScrollTop),
-  //         behavior: 'smooth',
-  //       });
-  //     }, 100);
-  //     
-  //     return () => clearTimeout(timeoutId);
-  //   }
-  // }, [currentPhrase]);
-
   const getDisplayText = (phrase: Phrase) => {
     switch (lyricsLang) {
       case 'EN':

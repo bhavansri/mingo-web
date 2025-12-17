@@ -10,7 +10,7 @@ import YoutubePlayerComponent, { YoutubePlayerRef } from '@/components/youtube-p
 import { supabase } from '@/lib/supabase';
 import { Gauge, Languages, Sparkles } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 interface Phrase {
   start_time: number;
@@ -29,7 +29,7 @@ interface Song {
   word_translations: Record<string, string> | null;
 }
 
-export default function Home() {
+function LearnPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [elapsed, setElapsed] = useState(0);
@@ -321,3 +321,14 @@ export default function Home() {
   );
 }
 
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col h-screen bg-black text-white items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    }>
+      <LearnPage />
+    </Suspense>
+  );
+}
