@@ -258,7 +258,7 @@ function LearnPage() {
       <div className="flex flex-row justify-between items-center mx-2.5 gap-2 flex-wrap sm:flex-nowrap shrink-0 py-2">
         <Button
           onClick={onLanguageModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
         >
           <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="text-sm sm:text-base">
@@ -267,17 +267,17 @@ function LearnPage() {
         </Button>
         <Button
           onClick={onSpeedModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
         >
           <Gauge className="w-5 h-5 sm:w-6 sm:h-6" />
           <span className="text-sm sm:text-base">{videoSpeed.toFixed(2)}x</span>
         </Button>
         <Button
           onClick={onModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-2.5 py-2.5 rounded-lg min-h-[44px] flex-1 sm:flex-initial"
+          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
         >
           <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-sm sm:text-base">Song Meaning</span>
+          <span className="text-xs sm:text-base">Song Meaning</span>
         </Button>
       </div>
 
