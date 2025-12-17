@@ -1,16 +1,64 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import FeatureScreenshot from '@/components/feature-screenshot';
 import DeviceFrame from '@/components/device-frame';
-import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleStartLearning = async () => {
+    if (!validateEmail(email)) {
+      return;
+    }
+
+    // If email hasn't been submitted yet, submit it first
+    if (!isSubmitted) {
+      setIsSubmitting(true);
+      try {
+        const { error } = await supabase
+          .from('submission')
+          .insert([{ email }]);
+
+        if (error) {
+          console.error('Error submitting email:', error);
+          setIsSubmitting(false);
+          return;
+        } else {
+          setIsSubmitted(true);
+        }
+      } catch (err) {
+        console.error('Error submitting email:', err);
+        setIsSubmitting(false);
+        return;
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+
+    // Navigate to learn page
+    router.push('/learn?id=1');
+  };
+
   return (
     <div className="min-h-screen bg-white text-black">
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-6xl mx-auto text-center space-y-8 sm:space-y-12">
             <div className="flex flex-col items-center gap-3 sm:gap-4">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-linear-to-r from-[#f12711] to-[#f5af19] bg-clip-text text-transparent">mingo.ai</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-linear-to-r from-[#E65100] to-[#FF8F00] bg-clip-text text-transparent">mingo.ai</div>
             </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             Learn Tamil Through Music 🎶
@@ -28,15 +76,24 @@ export default function LandingPage() {
               />
             </DeviceFrame>
           </div>
-          <div className="pt-4 sm:pt-6">
-            <Link href="/learn?id=1">
-              <Button 
-                size="lg" 
-                className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
-              >
-                Start Learning for Free
-              </Button>
-            </Link>
+          <div className="pt-4 sm:pt-6 w-full max-w-md mx-auto space-y-4">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
+              className="w-full text-base sm:text-lg px-4 py-3 h-auto border-gray-300 focus:border-[#f12711] focus:ring-[#f12711]"
+              required
+            />
+            <Button 
+              onClick={handleStartLearning}
+              size="lg" 
+              disabled={!validateEmail(email) || isSubmitting}
+              className="bg-linear-to-r from-[#E65100] to-[#FF8F00] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Submitting...' : 'Start Learning for Free'}
+            </Button>
           </div>
         </div>
       </section>
@@ -141,14 +198,14 @@ export default function LandingPage() {
             Start your journey today.
           </p>
           <div className="pt-4 sm:pt-6">
-            <Link href="/learn?id=1">
-              <Button 
-                size="lg" 
-                className="bg-linear-to-r from-[#f12711] to-[#f5af19] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold"
-              >
-                Start Learning for Free
-              </Button>
-            </Link>
+            <Button 
+              onClick={handleStartLearning}
+              size="lg" 
+              disabled={!validateEmail(email) || isSubmitting}
+              className="bg-linear-to-r from-[#E65100] to-[#FF8F00] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Submitting...' : 'Start Learning for Free'}
+            </Button>
           </div>
         </div>
       </section>
