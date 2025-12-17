@@ -23,23 +23,24 @@ export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhras
 
   return (
     <div className="flex flex-col items-center justify-center mb-2">
-      <p className="text font-bold text-[#ec003f] text-center mb-2">
-        {phrase.english_translation}
-      </p>
       <div className="flex flex-row items-center justify-center flex-wrap">
         {tamilWords.map((word, index) => {
           const translation = wordTranslations[word] || '';
           return (
             <div key={index} className="p-2 flex flex-col items-center">
-              <p className="text-xs text-gray-400">{word}</p>
               <p className="text-sm text-white">{romanWords[index] || ''}</p>
               {translation && (
                 <p className="text-sm text-[#ff637e] mt-1">{translation}</p>
               )}
+              <p className="text-sm text-gray-400">{word}</p>
             </div>
           );
         })}
       </div>
+      <p className="text-sm text-[#ff637e] text-center my-2">
+        {phrase.english_translation}
+      </p>
+      
     </div>
   );
 }
