@@ -57,10 +57,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-6xl mx-auto text-center space-y-8 sm:space-y-12">
-            <div className="flex flex-col items-center gap-3 sm:gap-4">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-linear-to-r from-[#E65100] to-[#FF8F00] bg-clip-text text-transparent">mingo.ai</div>
-            </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             Learn Tamil Through Music 🎶
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
