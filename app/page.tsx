@@ -18,7 +18,7 @@ export default function LandingPage() {
     const emailSubmitted = localStorage.getItem('emailSubmitted');
     if (emailSubmitted === 'true') {
       // Redirect directly to songs page if email has already been submitted
-      router.push('/songs?id=1');
+      router.push('/songs');
     }
   }, [router]);
 
