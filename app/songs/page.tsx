@@ -411,7 +411,7 @@ function SongsPage() {
         />
       </div>
       <div className="px-2.5 shrink-0">
-        <CurrentPhrase phrase={currentPhrase} wordTranslations={wordTranslations} />
+        <CurrentPhrase phrase={currentPhrase} wordTranslations={wordTranslations} cinematicMode={CINEMATIC_MODE} />
       </div>
       <div className="flex-1 min-h-0 px-2.5 flex flex-col">
         {CINEMATIC_MODE ? (

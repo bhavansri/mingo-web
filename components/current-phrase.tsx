@@ -11,9 +11,10 @@ interface Phrase {
 interface CurrentPhraseProps {
   phrase: Phrase | null;
   wordTranslations: Record<string, string>;
+  cinematicMode?: boolean;
 }
 
-export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhraseProps) {
+export default function CurrentPhrase({ phrase, wordTranslations, cinematicMode = false }: CurrentPhraseProps) {
   if (!phrase) {
     return <div className="h-[75px] flex items-center justify-center" />;
   }
@@ -22,12 +23,12 @@ export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhras
   const romanWords = phrase.romanization.split(' ');
 
   return (
-    <div className="flex flex-col items-center justify-center mb-2">
-      <div className="flex flex-row items-center justify-center flex-wrap">
+    <div className={`flex flex-col items-center justify-center mb-2 ${cinematicMode ? 'px-6' : ''}`}>
+      <div className="flex flex-row items-center justify-center flex-wrap gap-2">
         {tamilWords.map((word, index) => {
           const translation = wordTranslations[word] || '';
           return (
-            <div key={index} className="p-2 flex flex-col items-center">
+            <div key={index} className={`flex flex-col items-center bg-gray-800 rounded ${cinematicMode ? 'px-4 py-2' : 'p-2'}`}>
               <p className="text-sm text-white font-bold">{romanWords[index] || ''}</p>
               {translation && (
                 <p className="text-sm text-[#ff637e] mt-1 font-bold">{translation}</p>
@@ -37,7 +38,7 @@ export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhras
           );
         })}
       </div>
-      <p className="text-sm text-[#ff637e] text-center my-2 font-bold">
+      <p className="text-sm text-[#ff637e] text-center mt-6 mb-2 font-bold">
         {phrase.english_translation}
       </p>
       
