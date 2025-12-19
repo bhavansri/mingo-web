@@ -59,7 +59,7 @@ export default function LandingPage() {
     }
 
     // Navigate to songs page
-    router.push('/songs?id=1');
+    router.push('/songs');
   };
 
   return (
