@@ -24,15 +24,30 @@ interface Song {
   id: number;
   created_at: string;
   title: string | null;
+  album: string | null;
   youtube_id: string | null;
   phrases: Phrase[] | null;
   word_translations: Record<string, string> | null;
   ai_summary: string | null;
 }
 
-function LearnPage() {
+interface SongListItem {
+  id: number;
+  title: string | null;
+  album: string | null;
+}
+
+function SongsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const songId = searchParams.get('id');
+
+  // List view state
+  const [songs, setSongs] = useState<SongListItem[]>([]);
+  const [loadingSongs, setLoadingSongs] = useState(true);
+  const [songsError, setSongsError] = useState<string | null>(null);
+
+  // Player view state
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [showSongMeaning, setShowSongMeaning] = useState(false);
@@ -108,11 +123,11 @@ function LearnPage() {
     
     // If speed changed, update URL and reload page
     if (speed !== videoSpeed) {
-      const songId = searchParams.get('id');
+      const currentSongId = searchParams.get('id');
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.set('speed', speed.toString());
-      if (songId) {
-        currentUrl.searchParams.set('id', songId);
+      if (currentSongId) {
+        currentUrl.searchParams.set('id', currentSongId);
       }
       window.location.href = currentUrl.toString();
     }
@@ -132,104 +147,180 @@ function LearnPage() {
     setShowLanguageModal(false);
   }, []);
 
+  // Fetch all songs for list view
+  useEffect(() => {
+    if (!songId) {
+      const fetchSongs = async () => {
+        try {
+          setLoadingSongs(true);
+          setSongsError(null);
+          
+          const { data, error: fetchError } = await supabase
+            .from('song')
+            .select('id, title, album')
+            .order('id', { ascending: true });
+
+          if (fetchError) {
+            throw fetchError;
+          }
+
+          if (data) {
+            setSongs(data as SongListItem[]);
+          }
+          setLoadingSongs(false);
+        } catch (err) {
+          console.error('Error fetching songs:', err);
+          setSongsError(err instanceof Error ? err.message : 'Failed to load songs');
+          setLoadingSongs(false);
+        }
+      };
+
+      fetchSongs();
+    }
+  }, [songId]);
+
   // Initialize video speed from URL params
   useEffect(() => {
-    const speedParam = searchParams.get('speed');
-    if (speedParam) {
-      const speed = parseFloat(speedParam);
-      if (!isNaN(speed) && speed > 0) {
-        setVideoSpeed(speed);
-        previousSpeedRef.current = speed;
+    if (songId) {
+      const speedParam = searchParams.get('speed');
+      if (speedParam) {
+        const speed = parseFloat(speedParam);
+        if (!isNaN(speed) && speed > 0) {
+          setVideoSpeed(speed);
+          previousSpeedRef.current = speed;
+        }
+      } else {
+        previousSpeedRef.current = 1.0;
       }
-    } else {
-      previousSpeedRef.current = 1.0;
     }
-  }, [searchParams]);
+  }, [searchParams, songId]);
 
-  // Fetch song data from Supabase
+  // Fetch song data from Supabase for player view
   useEffect(() => {
-    const fetchSong = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const songId = searchParams.get('id');
-        if (!songId) {
-          setError('Song ID is required in URL parameter (e.g., ?id=1)');
+    if (songId) {
+      const fetchSong = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const { data, error: fetchError } = await supabase
+            .from('song')
+            .select('id, created_at, title, album, youtube_id, phrases, word_translations, ai_summary')
+            .eq('id', parseInt(songId, 10))
+            .single();
+
+          if (fetchError) {
+            throw fetchError;
+          }
+
+          if (!data) {
+            setError(`Song with ID ${songId} not found`);
+            setLoading(false);
+            return;
+          }
+
+          const song = data as Song;
+          
+          if (!song.youtube_id) {
+            setError('Song is missing YouTube ID');
+            setLoading(false);
+            return;
+          }
+
+          // Handle phrases - stored as { phrases: [...] }
+          if (!song.phrases || typeof song.phrases !== 'object' || !('phrases' in song.phrases)) {
+            setError('Song is missing phrases data');
+            setLoading(false);
+            return;
+          }
+          const phrasesObj = song.phrases as { phrases: Phrase[] };
+          const phrasesArray = phrasesObj.phrases;
+
+          if (!phrasesArray || phrasesArray.length === 0) {
+            setError('Song is missing phrases data');
+            setLoading(false);
+            return;
+          }
+
+          // Handle word_translations - stored as { word_translations: {...} }
+          let wordTranslationsObj: Record<string, string> = {};
+          if (song.word_translations && typeof song.word_translations === 'object' && 'word_translations' in song.word_translations) {
+            wordTranslationsObj = (song.word_translations as unknown as { word_translations: Record<string, string> }).word_translations;
+          }
+
+          setYoutubeId(song.youtube_id);
+          setPhrases(phrasesArray);
+          setWordTranslations(wordTranslationsObj);
+          setAiSummary(song.ai_summary);
           setLoading(false);
-          return;
-        }
-
-        const { data, error: fetchError } = await supabase
-          .from('song')
-          .select('id, created_at, title, youtube_id, phrases, word_translations, ai_summary')
-          .eq('id', parseInt(songId, 10))
-          .single();
-
-        if (fetchError) {
-          throw fetchError;
-        }
-
-        if (!data) {
-          setError(`Song with ID ${songId} not found`);
+        } catch (err) {
+          console.error('Error fetching song:', err);
+          setError(err instanceof Error ? err.message : 'Failed to load song data');
           setLoading(false);
-          return;
         }
+      };
 
-        const song = data as Song;
-        
-        if (!song.youtube_id) {
-          setError('Song is missing YouTube ID');
-          setLoading(false);
-          return;
-        }
-
-        // Handle phrases - stored as { phrases: [...] }
-        if (!song.phrases || typeof song.phrases !== 'object' || !('phrases' in song.phrases)) {
-          setError('Song is missing phrases data');
-          setLoading(false);
-          return;
-        }
-        const phrasesObj = song.phrases as { phrases: Phrase[] };
-        const phrasesArray = phrasesObj.phrases;
-
-        if (!phrasesArray || phrasesArray.length === 0) {
-          setError('Song is missing phrases data');
-          setLoading(false);
-          return;
-        }
-
-        // Handle word_translations - stored as { word_translations: {...} }
-        let wordTranslationsObj: Record<string, string> = {};
-        if (song.word_translations && typeof song.word_translations === 'object' && 'word_translations' in song.word_translations) {
-          wordTranslationsObj = (song.word_translations as unknown as { word_translations: Record<string, string> }).word_translations;
-        }
-
-        setYoutubeId(song.youtube_id);
-        setPhrases(phrasesArray);
-        setWordTranslations(wordTranslationsObj);
-        setAiSummary(song.ai_summary);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching song:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load song data');
-        setLoading(false);
-      }
-    };
-
-    fetchSong();
-  }, [searchParams]);
+      fetchSong();
+    }
+  }, [songId]);
 
   // Resume playback when modal closes
   useEffect(() => {
-    if (!showSongMeaning && !showSpeedModal && !showLanguageModal) {
+    if (songId && !showSongMeaning && !showSpeedModal && !showLanguageModal) {
       const timer = setTimeout(() => {
         setPlaying(true);
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [showSongMeaning, showSpeedModal, showLanguageModal]);
+  }, [showSongMeaning, showSpeedModal, showLanguageModal, songId]);
 
+  // List view
+  if (!songId) {
+    if (loadingSongs) {
+      return (
+        <div className="flex flex-col h-screen bg-black text-white items-center justify-center">
+          <div className="text-lg">Loading songs...</div>
+        </div>
+      );
+    }
+
+    if (songsError) {
+      return (
+        <div className="flex flex-col h-screen bg-black text-white items-center justify-center px-4">
+          <div className="text-lg text-red-400 mb-2">Error</div>
+          <div className="text-sm text-gray-400 text-center">{songsError}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-8">Songs</h1>
+          <div className="space-y-2">
+            {songs.length === 0 ? (
+              <div className="text-gray-400 text-center py-8">No songs found</div>
+            ) : (
+              songs.map((song) => {
+                const displayText = `${song.title || 'Untitled'} - ${song.album || 'Unknown Album'}`;
+                return (
+                  <button
+                    key={song.id}
+                    onClick={() => router.push(`/songs?id=${song.id}`)}
+                    className="w-full text-left px-4 py-3 rounded-lg border border-gray-700 hover:bg-[#1e2939] hover:border-gray-600 transition-colors"
+                  >
+                    {displayText}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Player view
   if (loading) {
     return (
       <div className="flex flex-col h-screen bg-black text-white items-center justify-center">
@@ -331,7 +422,7 @@ export default function Home() {
         <div className="text-lg">Loading...</div>
       </div>
     }>
-      <LearnPage />
+      <SongsPage />
     </Suspense>
   );
 }

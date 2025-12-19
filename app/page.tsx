@@ -48,8 +48,8 @@ export default function LandingPage() {
       }
     }
 
-    // Navigate to learn page
-    router.push('/learn?id=1');
+    // Navigate to songs page
+    router.push('/songs?id=1');
   };
 
   return (
