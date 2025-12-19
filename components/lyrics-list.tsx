@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef, useState } from 'react';
+import { Maximize2, Minimize2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Phrase {
   start_time: number;
@@ -25,6 +27,7 @@ export default function LyricsList({
 }: LyricsListProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const currentPhraseRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const getDisplayText = (phrase: Phrase) => {
     switch (lyricsLang) {
@@ -41,31 +44,63 @@ export default function LyricsList({
 
   return (
     <div
-      ref={listRef}
-      className="flex-1 overflow-y-auto w-full h-full"
-      style={{ maxHeight: '100%' }}
+      className={`bg-[#18181b] ${
+        isFullscreen
+          ? 'fixed inset-4 z-50 rounded-lg'
+          : 'flex-1 w-full h-full'
+      }`}
     >
-      {phrases.map((phrase, index) => {
-        const isCurrent =
-          currentPhrase &&
-          phrase.start_time === currentPhrase.start_time &&
-          phrase.end_time === currentPhrase.end_time;
-
-        return (
-          <div
-            key={`${phrase.start_time}-${phrase.end_time}-${index}`}
-            ref={isCurrent ? currentPhraseRef : null}
-            onClick={() => onPhraseClick(phrase)}
-            className={`p-2 text-center cursor-pointer transition-colors ${
-              isCurrent
-                ? 'bg-[#18181b] text-white'
-                : 'bg-[#18181b] text-gray-400 hover:text-gray-200'
-            }`}
+      <div className="relative w-full h-full flex flex-col">
+        {/* Header with toggle button */}
+        <div className="relative shrink-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="absolute top-2 right-2 z-10 text-gray-400 hover:bg-gray-800 hover:text-gray-400"
+            aria-label={isFullscreen ? 'Minimize' : 'Maximize'}
           >
-            <p className="text-sm">{getDisplayText(phrase)}</p>
+            {isFullscreen ? (
+              <Minimize2 className="h-5 w-5" />
+            ) : (
+              <Maximize2 className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
+
+        {/* Scrollable lyrics list */}
+        <div
+          ref={listRef}
+          className={`flex-1 overflow-y-auto w-full ${
+            isFullscreen ? 'h-full' : ''
+          }`}
+          style={{ maxHeight: isFullscreen ? '100%' : undefined }}
+        >
+          <div className={isFullscreen ? 'py-4' : ''}>
+            {phrases.map((phrase, index) => {
+            const isCurrent =
+              currentPhrase &&
+              phrase.start_time === currentPhrase.start_time &&
+              phrase.end_time === currentPhrase.end_time;
+
+            return (
+              <div
+                key={`${phrase.start_time}-${phrase.end_time}-${index}`}
+                ref={isCurrent ? currentPhraseRef : null}
+                onClick={() => onPhraseClick(phrase)}
+                className={`p-2 text-center cursor-pointer transition-colors ${
+                  isCurrent
+                    ? 'bg-[#18181b] text-white font-bold'
+                    : 'bg-[#18181b] text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                <p className="text-sm">{getDisplayText(phrase)}</p>
+              </div>
+            );
+          })}
           </div>
-        );
-      })}
+        </div>
+      </div>
     </div>
   );
 }

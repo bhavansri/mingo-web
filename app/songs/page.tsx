@@ -147,6 +147,11 @@ function SongsPage() {
     setShowLanguageModal(false);
   }, []);
 
+  // Scroll to top on page load and when songId changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [songId]);
+
   // Fetch all songs for list view
   useEffect(() => {
     if (!songId) {
@@ -166,6 +171,8 @@ function SongsPage() {
 
           if (data) {
             setSongs(data as SongListItem[]);
+            // Scroll to top after songs are loaded
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }
           setLoadingSongs(false);
         } catch (err) {

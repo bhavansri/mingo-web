@@ -28,16 +28,16 @@ export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhras
           const translation = wordTranslations[word] || '';
           return (
             <div key={index} className="p-2 flex flex-col items-center">
-              <p className="text-sm text-white">{romanWords[index] || ''}</p>
+              <p className="text-sm text-white font-bold">{romanWords[index] || ''}</p>
               {translation && (
-                <p className="text-sm text-[#ff637e] mt-1">{translation}</p>
+                <p className="text-sm text-[#ff637e] mt-1 font-bold">{translation}</p>
               )}
-              <p className="text-sm text-gray-400">{word}</p>
+              <p className="text-sm text-gray-400 font-bold">{word}</p>
             </div>
           );
         })}
       </div>
-      <p className="text-sm text-[#ff637e] text-center my-2">
+      <p className="text-sm text-[#ff637e] text-center my-2 font-bold">
         {phrase.english_translation}
       </p>
       
