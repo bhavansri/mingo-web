@@ -6,13 +6,21 @@ import FeatureScreenshot from '@/components/feature-screenshot';
 import DeviceFrame from '@/components/device-frame';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function LandingPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  useEffect(() => {
+    const emailSubmitted = localStorage.getItem('emailSubmitted');
+    if (emailSubmitted === 'true') {
+      // Redirect directly to songs page if email has already been submitted
+      router.push('/songs?id=1');
+    }
+  }, [router]);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,6 +46,8 @@ export default function LandingPage() {
           return;
         } else {
           setIsSubmitted(true);
+          // Store flag in localStorage to remember email submission
+          localStorage.setItem('emailSubmitted', 'true');
         }
       } catch (err) {
         console.error('Error submitting email:', err);
@@ -86,7 +96,7 @@ export default function LandingPage() {
             <Button 
               onClick={handleStartLearning}
               size="lg" 
-              disabled={!validateEmail(email) || isSubmitting}
+              disabled={(!isSubmitted && !validateEmail(email)) || isSubmitting}
               className="bg-linear-to-r from-[#E65100] to-[#FF8F00] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold w-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Start Learning for Free'}
@@ -198,7 +208,7 @@ export default function LandingPage() {
             <Button 
               onClick={handleStartLearning}
               size="lg" 
-              disabled={!validateEmail(email) || isSubmitting}
+              disabled={(!isSubmitted && !validateEmail(email)) || isSubmitting}
               className="bg-linear-to-r from-[#E65100] to-[#FF8F00] text-white hover:opacity-90 text-base sm:text-lg px-10 sm:px-12 py-3 sm:py-4 h-auto rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Start Learning for Free'}
