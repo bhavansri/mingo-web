@@ -37,6 +37,9 @@ interface SongListItem {
   album: string | null;
 }
 
+// Cinematic mode flag - set to true to enable cinematic mode (black view instead of lyrics list)
+const CINEMATIC_MODE = true;
+
 function SongsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -411,12 +414,16 @@ function SongsPage() {
         <CurrentPhrase phrase={currentPhrase} wordTranslations={wordTranslations} />
       </div>
       <div className="flex-1 min-h-0 px-2.5 flex flex-col">
-        <LyricsList
-          phrases={phrases}
-          currentPhrase={currentPhrase}
-          lyricsLang={lyricsLang}
-          onPhraseClick={onPhraseClick}
-        />
+        {CINEMATIC_MODE ? (
+          <div className="flex-1 w-full h-full bg-black" />
+        ) : (
+          <LyricsList
+            phrases={phrases}
+            currentPhrase={currentPhrase}
+            lyricsLang={lyricsLang}
+            onPhraseClick={onPhraseClick}
+          />
+        )}
       </div>
     </div>
   );
