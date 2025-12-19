@@ -359,31 +359,35 @@ function SongsPage() {
   return (
     <div className="flex flex-col h-screen bg-black text-white overflow-hidden">
       {/* Header Controls */}
-      <div className="flex flex-row justify-between items-center mx-2.5 gap-2 flex-wrap sm:flex-nowrap shrink-0 py-2">
-        <Button
-          onClick={onLanguageModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
-        >
-          <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="text-sm sm:text-base">
-            {getLanguageDisplayText(lyricsLang)}
-          </span>
-        </Button>
-        <Button
-          onClick={onSpeedModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
-        >
-          <Gauge className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="text-sm sm:text-base">{videoSpeed.toFixed(2)}x</span>
-        </Button>
-        <Button
-          onClick={onModalOpen}
-          className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
-        >
-          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-xs sm:text-base">Song Meaning</span>
-        </Button>
-      </div>
+      {CINEMATIC_MODE ? (
+        <div className="shrink-0 bg-black h-[100px]" />
+      ) : (
+        <div className="flex flex-row justify-between items-center mx-2.5 gap-2 flex-wrap sm:flex-nowrap shrink-0 py-2">
+          <Button
+            onClick={onLanguageModalOpen}
+            className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
+          >
+            <Languages className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="text-sm sm:text-base">
+              {getLanguageDisplayText(lyricsLang)}
+            </span>
+          </Button>
+          <Button
+            onClick={onSpeedModalOpen}
+            className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
+          >
+            <Gauge className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="text-sm sm:text-base">{videoSpeed.toFixed(2)}x</span>
+          </Button>
+          <Button
+            onClick={onModalOpen}
+            className="flex flex-row items-center gap-1 bg-[#1e2939] text-white hover:bg-[#2a3441] px-1 py-1 rounded min-h-[25px] flex-1 sm:flex-initial"
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-xs sm:text-base">Song Meaning</span>
+          </Button>
+        </div>
+      )}
 
       {/* Modals */}
       <SongMeaning open={showSongMeaning} onOpenChange={onModalClose} aiSummary={aiSummary} />
