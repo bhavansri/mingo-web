@@ -23,11 +23,11 @@ export default function CurrentPhrase({ phrase, wordTranslations }: CurrentPhras
 
   return (
     <div className="flex flex-col items-center justify-center mb-2">
-      <div className="flex flex-row items-center justify-center flex-wrap">
+      <div className="flex flex-row items-center justify-center flex-wrap gap-2">
         {tamilWords.map((word, index) => {
           const translation = wordTranslations[word] || '';
           return (
-            <div key={index} className="p-2 flex flex-col items-center">
+            <div key={index} className="p-2 flex flex-col items-center bg-gray-800 rounded">
               <p className="text-sm text-white font-bold">{romanWords[index] || ''}</p>
               {translation && (
                 <p className="text-sm text-[#ff637e] mt-1 font-bold">{translation}</p>
