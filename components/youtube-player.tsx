@@ -51,7 +51,7 @@ const YoutubePlayerComponent = forwardRef<YoutubePlayerRef, YoutubePlayerProps>(
       width: '100%',
       playerVars: {
         autoplay: 0,
-        controls: 0,
+        controls: 1,
         rel: 0,
         modestbranding: 1,
       },
