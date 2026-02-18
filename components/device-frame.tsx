@@ -11,13 +11,13 @@ export default function DeviceFrame({ children, className = '' }: DeviceFramePro
   return (
     <div className={`relative mx-auto ${className}`}>
       {/* Device Frame - Outer black border */}
-      <div className="relative bg-black rounded-[3rem] sm:rounded-[3.5rem] p-2 sm:p-3 shadow-2xl">
+      <div className="relative bg-black rounded-[2.5rem] sm:rounded-[3rem] md:rounded-[3.5rem] p-2 sm:p-3 md:p-[10px] shadow-2xl">
         {/* Screen Bezel - Inner frame */}
-        <div className="relative bg-white rounded-[2.5rem] sm:rounded-[3rem] overflow-hidden">
+        <div className="relative bg-white rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden">
           {/* Notch */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 sm:w-40 h-6 sm:h-7 bg-black rounded-b-2xl sm:rounded-b-3xl z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 sm:w-32 md:w-40 h-5 sm:h-6 md:h-7 bg-black rounded-b-xl sm:rounded-b-2xl md:rounded-b-3xl z-10" />
           {/* Screen Content Area */}
-          <div className="relative w-full aspect-[9/19.5] sm:aspect-[9/19.5]">
+          <div className="relative w-full aspect-[9/19.5]">
             {children}
           </div>
         </div>
