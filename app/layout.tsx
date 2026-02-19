@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mingo.ai",
+  title: "SayKili.ai",
   description: "Learn Tamil in real situations—greetings, food, family, travel, and more. Listen, speak, and translate your way to fluency.",
   icons: {
     icon: "/logo.png",

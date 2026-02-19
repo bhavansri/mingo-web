@@ -14,12 +14,12 @@ export default function LandingPage() {
             <span className="relative h-10 w-10 shrink-0">
               <Image
                 src="/logo.png"
-                alt="Mingo.ai"
+                alt="SayKili.ai"
                 fill
                 className="object-contain"
               />
             </span>
-            <span className="text-lg font-semibold text-black">Mingo.ai</span>
+            <span className="text-lg font-semibold text-black">SayKili.ai</span>
           </a>
         </div>
       </header>
@@ -44,7 +44,7 @@ export default function LandingPage() {
           </div>
           <div className="pt-4 sm:pt-6 w-full max-w-md mx-auto">
             <a
-              href="https://testflight.apple.com/join/your-invite-code"
+              href="https://testflight.apple.com/join/Z7WynQCu"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-3 min-h-[56px] px-8 py-4 rounded-xl bg-black text-white text-lg font-medium hover:opacity-90 transition-opacity border border-[#86868b] w-full sm:w-auto"
@@ -109,7 +109,7 @@ export default function LandingPage() {
                 <DeviceFrame className="w-full">
                   <FeatureScreenshot
                     src="/screenshots/hero.png"
-                    alt="Mingo app - Scenarios: Greetings, Question Words, Food Convos, Family, and more"
+                    alt="SayKili app - Scenarios: Greetings, Question Words, Food Convos, Family, and more"
                   />
                 </DeviceFrame>
               </div>
@@ -159,7 +159,7 @@ export default function LandingPage() {
           </p>
           <div className="pt-4 sm:pt-6">
             <a
-              href="https://testflight.apple.com/join/your-invite-code"
+              href="https://testflight.apple.com/join/Z7WynQCu"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-3 min-h-[56px] px-8 py-4 rounded-xl bg-black text-white text-lg font-medium hover:opacity-90 transition-opacity border border-[#86868b]"
