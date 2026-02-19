@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "🥭 Mingo",
-  description: "Tamil music with synchronized lyrics",
+  title: "SayKili.ai",
+  description: "Learn Tamil in real situations—greetings, food, family, travel, and more. Listen, speak, and translate your way to fluency.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
