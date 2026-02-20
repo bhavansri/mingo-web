@@ -27,10 +27,12 @@ export default function LandingPage() {
       <section className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-6xl mx-auto text-center space-y-8 sm:space-y-12">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-            Learn Tamil in Real Situations 🎯
+            Practice speaking tamil in just 5 minutes a day 🎯
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-black/70 max-w-2xl mx-auto">
-            Master phrases through scenarios—greetings, food, family, travel, and more. Listen, speak, and translate your way to fluency.
+          Learn spoken tamil through real-world scenarios.
+          <br />
+          Broken down into bite-sized lessons.
           </p>
           {/* Main Hero - Learn this word demo */}
           <div className="relative w-full max-w-[220px] sm:max-w-[260px] md:max-w-[300px] mx-auto mt-8 sm:mt-12">
